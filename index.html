@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorization Code Capture</title>
+</head>
+<body>
+<h2>Authorization Code</h2>
+<p id="message">Aguardando o código de autorização...</p>
+<p><strong>Code:</strong> <span id="auth-code"></span></p>
+<script>
+    // Captura o código da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+
+    console.log('Code:', code);
+
+    if (code) {
+        // Exibe o código na página
+        document.getElementById('auth-code').textContent = code;
+        document.getElementById('message').textContent = 'Código capturado com sucesso!';
+
+        // Opcional: Enviar o código para o servidor automaticamente
+        fetch('/process-code', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'code=' + encodeURIComponent(code)
+        })
+            .then(response => response.text())
+            .then(data => {
+                console.log('Response:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    } else {
+        document.getElementById('message').textContent = 'Nenhum código encontrado na URL.';
+    }
+</script>
+</body>
+</html>
